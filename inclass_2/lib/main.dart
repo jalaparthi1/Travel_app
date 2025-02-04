@@ -12,12 +12,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.light; // Default to Light Mode
+  ThemeMode _themeMode = ThemeMode.light; // Default Light Mode
 
-  // Toggle Light/Dark Mode
-  void toggleTheme(bool isDark) {
+  // Function to Switch Themes
+  void setTheme(ThemeMode themeMode) {
     setState(() {
-      _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+      _themeMode = themeMode;
     });
   }
 
@@ -42,17 +42,16 @@ class _MyAppState extends State<MyApp> {
           bodyLarge: TextStyle(fontSize: 18, color: Colors.white),
         ),
       ),
-      themeMode: _themeMode, // Switches between light and dark mode
-      home: HomeScreen(toggleTheme: toggleTheme, isDarkMode: _themeMode == ThemeMode.dark),
+      themeMode: _themeMode, // Switches theme dynamically
+      home: HomeScreen(setTheme: setTheme),
     );
   }
 }
 
 class HomeScreen extends StatelessWidget {
-  final Function(bool) toggleTheme;
-  final bool isDarkMode;
+  final Function(ThemeMode) setTheme;
 
-  const HomeScreen({Key? key, required this.toggleTheme, required this.isDarkMode}) : super(key: key);
+  const HomeScreen({Key? key, required this.setTheme}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +69,31 @@ class HomeScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 20),
-              const Text("Toggle Theme Below"),
-              Switch(
-                value: isDarkMode,
-                onChanged: (bool value) {
-                  toggleTheme(value);
+
+              // Light Mode Button
+              ElevatedButton(
+                onPressed: () {
+                  setTheme(ThemeMode.light);
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
+                child: const Text("Light Mode"),
+              ),
+
+              const SizedBox(height: 10),
+
+              // Dark Mode Button
+              ElevatedButton(
+                onPressed: () {
+                  setTheme(ThemeMode.dark);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text("Dark Mode"),
               ),
             ],
           ),
