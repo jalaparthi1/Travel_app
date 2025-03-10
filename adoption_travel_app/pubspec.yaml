@@ -1,0 +1,29 @@
+name: adoption_travel_app
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Calendar Package
+  table_calendar: ^3.0.9
+
+  # State Management & UI Enhancements
+  flutter_slidable: ^3.0.1 # For swipe gestures
+  intl: ^0.18.1 # For date formatting
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
