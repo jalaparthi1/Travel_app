@@ -90,80 +90,103 @@ class _PlanManagerScreenState extends State<PlanManagerScreen> {
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24)),
           ),
-          Container(
-            // 🔺 Moving the drag-and-drop section UP
-            padding: EdgeInsets.all(10),
-            color: Colors.blue[100],
-            child: Column(
+          Expanded(
+            child: Stack(
               children: [
-                Text("Drag plans here to assign them",
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
-                Wrap(
-                  spacing: 10,
-                  children: unassignedPlans.map((plan) {
-                    return Draggable<Plan>(
-                      data: plan,
-                      feedback: Material(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          color: _getPlanColor(plan),
-                          child:
-                              Text(plan.name, style: TextStyle(fontSize: 18)),
+                // Main body content
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text("Assigned Plans",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Expanded(
+                        child: DragTarget<Plan>(
+                          onAccept: (plan) => _assignPlanToList(plan),
+                          builder: (context, candidateData, rejectedData) =>
+                              ListView.builder(
+                            itemCount: plans.length,
+                            itemBuilder: (context, index) {
+                              final plan = plans[index];
+                              return GestureDetector(
+                                onDoubleTap: () => _deletePlan(index),
+                                onLongPress: () => _editPlan(index),
+                                child: Slidable(
+                                  key: Key(plan.name),
+                                  startActionPane: ActionPane(
+                                    motion: StretchMotion(),
+                                    children: [
+                                      SlidableAction(
+                                        onPressed: (ctx) =>
+                                            _toggleCompletion(index),
+                                        backgroundColor: Colors.green,
+                                        icon: Icons.check,
+                                        label: 'Complete',
+                                      ),
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    title: Text(plan.name,
+                                        style: TextStyle(
+                                            decoration: plan.isCompleted
+                                                ? TextDecoration.lineThrough
+                                                : null)),
+                                    subtitle: Text(
+                                        "${plan.description} - ${plan.date.toLocal()}"),
+                                    trailing: Text(plan.priority,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    tileColor: _getPlanColor(plan),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        color: _getPlanColor(plan),
-                        child: Text(plan.name),
-                      ),
-                    );
-                  }).toList(),
+                    ],
+                  ),
+                ),
+
+                // The Drag-and-Drop Container in the middle of the screen
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    color: Colors.blue[100],
+                    child: Column(
+                      children: [
+                        Text("Drag plans here to assign them",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 8),
+                        Wrap(
+                          spacing: 10,
+                          children: unassignedPlans.map((plan) {
+                            return Draggable<Plan>(
+                              data: plan,
+                              feedback: Material(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  color: _getPlanColor(plan),
+                                  child: Text(plan.name,
+                                      style: TextStyle(fontSize: 18)),
+                                ),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                color: _getPlanColor(plan),
+                                child: Text(plan.name),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
-            ),
-          ),
-          Expanded(
-            child: DragTarget<Plan>(
-              onAccept: (plan) => _assignPlanToList(plan),
-              builder: (context, candidateData, rejectedData) =>
-                  ListView.builder(
-                itemCount: plans.length,
-                itemBuilder: (context, index) {
-                  final plan = plans[index];
-                  return GestureDetector(
-                    onDoubleTap: () => _deletePlan(index),
-                    onLongPress: () => _editPlan(index),
-                    child: Slidable(
-                      key: Key(plan.name),
-                      startActionPane: ActionPane(
-                        motion: StretchMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (ctx) => _toggleCompletion(index),
-                            backgroundColor: Colors.green,
-                            icon: Icons.check,
-                            label: 'Complete',
-                          ),
-                        ],
-                      ),
-                      child: ListTile(
-                        title: Text(plan.name,
-                            style: TextStyle(
-                                decoration: plan.isCompleted
-                                    ? TextDecoration.lineThrough
-                                    : null)),
-                        subtitle: Text(
-                            "${plan.description} - ${plan.date.toLocal()}"),
-                        trailing: Text(plan.priority,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        tileColor: _getPlanColor(plan),
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
           ),
         ],
