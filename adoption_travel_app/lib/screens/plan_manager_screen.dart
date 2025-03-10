@@ -93,7 +93,7 @@ class _PlanManagerScreenState extends State<PlanManagerScreen> {
           Expanded(
             child: Stack(
               children: [
-                // Main body content
+                // Main body content (plans list)
                 Container(
                   padding: EdgeInsets.all(10),
                   child: Column(
@@ -149,9 +149,9 @@ class _PlanManagerScreenState extends State<PlanManagerScreen> {
                   ),
                 ),
 
-                // The Drag-and-Drop Container in the middle of the screen
+                // Drag-and-Drop Container at the bottom of the screen
                 Align(
-                  alignment: Alignment.center,
+                  alignment: Alignment.bottomCenter, // Align it to the bottom
                   child: Container(
                     padding: EdgeInsets.all(10),
                     color: Colors.blue[100],
